@@ -97,15 +97,16 @@ all_workspace = [
 
 users = [
     User(login='galionme1', password=get_password_hash('123')),
+    User(login='usr', password=get_password_hash('123')),
     User(login='galionme2', password=get_password_hash('456'))
 ]
 
 
 ### helpers
 
-def authenticate_user(username: str, password: str):
+def authenticate_user(login: str, password: str):
     for user in users:
-        if user.login == username and pwd_context.verify(password, user.password):
+        if user.login == login and pwd_context.verify(password, user.password):
             return user
     return None
 
@@ -126,8 +127,10 @@ def set_answer_good(response):
 
 # check user and set new token - no auth
 @app.post('/token')
-def login_for_access_token(username: str, password: str):
-    user = authenticate_user(username, password)
+def login_for_access_token(task: User):
+    login = task.login
+    password = task.password
+    user = authenticate_user(login, password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -137,9 +140,24 @@ def login_for_access_token(username: str, password: str):
     access_token = create_access_token(
         data={'sub': user.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
-    return {'access_token': access_token, 'token_type': 'bearer'}
+    return {'access_token': access_token, 'token_type': 'Bearer'}
 
 # create workspace and create user - no auth 
+
+@app.post('/create_user')
+def create_user(task: User):
+    # user = authenticate_user(task.login, task.password)
+    # if not user:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_401_UNAUTHORIZED,
+    #         detail='Неправильный логин или пароль',
+    #         headers={'Authorization': 'Bearer'},
+    #     )
+    access_token = create_access_token(
+        data={'sub': task.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
+    return {'access_token': access_token, 'token_type': 'Bearer'}
+
 @app.post('/create_workspace')
 def create_workspace(workspace: WorkSpace):
     all_workspace.append(WorkSpace(login=workspace.login, password=get_password_hash(workspace.password), workspace_name=workspace.workspace_name))
@@ -149,8 +167,8 @@ def create_workspace(workspace: WorkSpace):
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
 
-@app.post('/read_workspace')
-def create_workspace(task: ReadWorkSpace, current_user: User = Depends(oauth2_scheme)):
+@app.post('/read_path')
+def read_path(task: ReadWorkSpace, current_user: User = Depends(oauth2_scheme)):
     path = task.path
     offset = task.offset
     limit = task.limit - 1
