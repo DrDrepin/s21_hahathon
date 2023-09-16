@@ -54,6 +54,7 @@ func main() {
 	s := grpc.NewServer(opts...)
 
 	minio_service.RegisterTransmissionServer(s, &server{})
+
 	go func() {
 		fmt.Println("Starting Server...")
 		if err := s.Serve(lis); err != nil {
@@ -61,11 +62,9 @@ func main() {
 		}
 	}()
 
-	// Wait for Control C to exit
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt)
 
-	// Block until a signal is received
 	<-ch
 	fmt.Println("Goodbye")
 
