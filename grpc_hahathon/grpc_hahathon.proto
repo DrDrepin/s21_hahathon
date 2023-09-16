@@ -11,7 +11,7 @@ service Transmission {
 }
 
 message Binary {
-    repeated bytes binary = 2;
+    bytes binary = 2;
 }
 
 message Path {
