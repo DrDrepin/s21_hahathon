@@ -32,6 +32,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
+def get_bad_answer():
+    return {'data': False, 'status': 'EROR', 'code': 501}
 ####################################
 
 class BodyRead(BaseModel): 
@@ -167,7 +169,7 @@ def upload_file(path: str, current_user: User = Depends(oauth2_scheme)):
         if file.path == path:
             files.remove(file)
             return {'data': path, 'status': 'OK', 'code': 200}
-    return {'data': False, 'status': 'EROR', 'code': 501}
+    return get_bad_answer()
 
 @app.post('/upload_file/{path}')
 def upload_file(task: DataFile, path: str, current_user: User = Depends(oauth2_scheme)):
@@ -182,14 +184,26 @@ def replace_file(task: DataFile, path: str, current_user: User = Depends(oauth2_
         if file.path == path:
             file.path = data
             return {'data': path, 'status': 'OK', 'code': 200}
-    return {'data': False, 'status': 'EROR', 'code': 501}
+    return get_bad_answer()
 
 @app.get('/give_file/{path}')
 def give_file(path: str, current_user: User = Depends(oauth2_scheme)):
     for file in files:
         if file.path == path:
             return {'data': file.data, 'status': 'OK', 'code': 200}
-    return {'data': False, 'status': 'EROR', 'code': 501}
+    return get_bad_answer()
+
+@app.get('/create_folder/{folder}')
+def create_folder(folder: str, current_user: User = Depends(oauth2_scheme)):
+    return {'data': folder, 'status': 'OK', 'code': 200}
+
+@app.get('/delete_folder/{folder}')
+def delete_folder(folder: str, current_user: User = Depends(oauth2_scheme)):
+    return {'data': folder, 'status': 'OK', 'code': 200}
+
+@app.get('/give_folder/{folder}')
+def give_folder(folder: str, current_user: User = Depends(oauth2_scheme)):
+    return {'data': folder, 'status': 'OK', 'code': 200}
 
 ####################################
 
