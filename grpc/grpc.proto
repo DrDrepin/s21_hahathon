@@ -1,7 +1,6 @@
-
 syntax = "proto3";
 
-option go_package='./minio-service';
+option go_package = "./minio-service";
 
 package transmission;
 
