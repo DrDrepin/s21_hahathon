@@ -33,6 +33,9 @@ func (s *server) TakeFileFromServer(ctx context.Context, req *minio_service.Path
 	}, nil
 }
 func (s *server) DeleteFileOnServer(ctx context.Context, req *minio_service.Path) (*minio_service.Status, error) {
+
+	minio.DeleteFile(req.Path, "work1")
+
 	return &minio_service.Status{
 		Status: true,
 	}, nil

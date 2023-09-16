@@ -12,7 +12,7 @@ service Transmission {
 }
 
 message Binary {
-     bytes binary = 2;
+    bytes binary = 2;
 }
 
 message Path {

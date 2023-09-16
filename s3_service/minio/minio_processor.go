@@ -38,7 +38,6 @@ func CreateBucket(name string) {
 
 func DownloadFile(name string, workspace string, path string) {
 	uploadInfo, err := minioClient.FPutObject(workspace, name, path, minio.PutObjectOptions{})
-
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -3,6 +3,7 @@ module hahaton
 go 1.21.0
 
 require (
+	github.com/h2non/bimg v1.1.9
 	github.com/minio/minio-go v6.0.14+incompatible
 	google.golang.org/grpc v1.58.1
 	google.golang.org/protobuf v1.31.0
