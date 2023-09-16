@@ -6,6 +6,13 @@ from fastapi import FastAPI, status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
+
+import grpc
+import grpc_helper
+import grpc_pb2 as pb2
+import grpc_pb2_grpc as grpc_pb2
+
+
 # import grpc
 # import my_service_pb2
 # import my_service_pb2_grpc
@@ -143,6 +150,16 @@ def put_files(user: User):
         data={'sub': user.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
+
+
+@app.get('/test')
+def test():
+    with grpc.insecure_channel('localhost:8785') as channel:
+        stub = grpc_pb2.TransmissionStub(channel)
+        req = pb2.Path(path="go")
+        responce = stub.DeleteFileOnServer(req)
+        print(responce)
+    pass
 
 users = [
     User(login='galionme', password=get_password_hash('123')),

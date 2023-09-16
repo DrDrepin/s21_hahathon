@@ -3,12 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	minio_service "hahaton/minio-service"
 	"hahaton/minio"
+	minio_service "hahaton/minio-service"
 	"log"
 	"net"
 	"os"
 	"os/signal"
+
 	"google.golang.org/grpc"
 )
 
@@ -21,16 +22,17 @@ func (s *server) SendFileToServer(ctx context.Context, req *minio_service.SendFi
 		Status: true,
 	}, nil
 }
-// func (s *server) TakeFileFromServer(ctx context.Context, req *minio_service.Path) (*minio_service.TakeFile, error) {
-// 	return &minio_service.TakeFile{
-// 		BoolStatus: &minio_service.Status{
-// 			Status: true,
-// 		},
-// 		BinaryFile: &minio_service.Binary{
-// 			Binary: make([][]byte, 0),
-// 		},
-// 	}, nil
-// }
+
+//	func (s *server) TakeFileFromServer(ctx context.Context, req *minio_service.Path) (*minio_service.TakeFile, error) {
+//		return &minio_service.TakeFile{
+//			BoolStatus: &minio_service.Status{
+//				Status: true,
+//			},
+//			BinaryFile: &minio_service.Binary{
+//				Binary: make([][]byte, 0),
+//			},
+//		}, nil
+//	}
 func (s *server) DeleteFileOnServer(ctx context.Context, req *minio_service.Path) (*minio_service.Status, error) {
 
 	minio.DeleteFile(req.Path, "work1")

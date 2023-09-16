@@ -47,6 +47,11 @@ public final class Grpc {
       return new Binary();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return transmission.Grpc.internal_static_transmission_Binary_descriptor;
@@ -61,7 +66,7 @@ public final class Grpc {
     }
 
     public static final int BINARY_FIELD_NUMBER = 2;
-    private com.google.protobuf.ByteString binary_ = com.google.protobuf.ByteString.EMPTY;
+    private com.google.protobuf.ByteString binary_;
     /**
      * <code>bytes binary = 2;</code>
      * @return The binary.
@@ -180,13 +185,11 @@ public final class Grpc {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static transmission.Grpc.Binary parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static transmission.Grpc.Binary parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -261,8 +264,8 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        bitField0_ = 0;
         binary_ = com.google.protobuf.ByteString.EMPTY;
+
         return this;
       }
 
@@ -289,16 +292,9 @@ public final class Grpc {
       @java.lang.Override
       public transmission.Grpc.Binary buildPartial() {
         transmission.Grpc.Binary result = new transmission.Grpc.Binary(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        result.binary_ = binary_;
         onBuilt();
         return result;
-      }
-
-      private void buildPartial0(transmission.Grpc.Binary result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.binary_ = binary_;
-        }
       }
 
       @java.lang.Override
@@ -376,7 +372,7 @@ public final class Grpc {
                 break;
               case 18: {
                 binary_ = input.readBytes();
-                bitField0_ |= 0x00000001;
+
                 break;
               } // case 18
               default: {
@@ -394,7 +390,6 @@ public final class Grpc {
         } // finally
         return this;
       }
-      private int bitField0_;
 
       private com.google.protobuf.ByteString binary_ = com.google.protobuf.ByteString.EMPTY;
       /**
@@ -411,9 +406,11 @@ public final class Grpc {
        * @return This builder for chaining.
        */
       public Builder setBinary(com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         binary_ = value;
-        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -422,7 +419,7 @@ public final class Grpc {
        * @return This builder for chaining.
        */
       public Builder clearBinary() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         binary_ = getDefaultInstance().getBinary();
         onChanged();
         return this;
@@ -530,6 +527,11 @@ public final class Grpc {
       return new Path();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return transmission.Grpc.internal_static_transmission_Path_descriptor;
@@ -544,8 +546,7 @@ public final class Grpc {
     }
 
     public static final int PATH_FIELD_NUMBER = 1;
-    @SuppressWarnings("serial")
-    private volatile java.lang.Object path_ = "";
+    private volatile java.lang.Object path_;
     /**
      * <code>string path = 1;</code>
      * @return The path.
@@ -690,13 +691,11 @@ public final class Grpc {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static transmission.Grpc.Path parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static transmission.Grpc.Path parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -771,8 +770,8 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        bitField0_ = 0;
         path_ = "";
+
         return this;
       }
 
@@ -799,16 +798,9 @@ public final class Grpc {
       @java.lang.Override
       public transmission.Grpc.Path buildPartial() {
         transmission.Grpc.Path result = new transmission.Grpc.Path(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        result.path_ = path_;
         onBuilt();
         return result;
-      }
-
-      private void buildPartial0(transmission.Grpc.Path result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.path_ = path_;
-        }
       }
 
       @java.lang.Override
@@ -857,7 +849,6 @@ public final class Grpc {
         if (other == transmission.Grpc.Path.getDefaultInstance()) return this;
         if (!other.getPath().isEmpty()) {
           path_ = other.path_;
-          bitField0_ |= 0x00000001;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -888,7 +879,7 @@ public final class Grpc {
                 break;
               case 10: {
                 path_ = input.readStringRequireUtf8();
-                bitField0_ |= 0x00000001;
+
                 break;
               } // case 10
               default: {
@@ -906,7 +897,6 @@ public final class Grpc {
         } // finally
         return this;
       }
-      private int bitField0_;
 
       private java.lang.Object path_ = "";
       /**
@@ -949,9 +939,11 @@ public final class Grpc {
        */
       public Builder setPath(
           java.lang.String value) {
-        if (value == null) { throw new NullPointerException(); }
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
         path_ = value;
-        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -960,8 +952,8 @@ public final class Grpc {
        * @return This builder for chaining.
        */
       public Builder clearPath() {
+        
         path_ = getDefaultInstance().getPath();
-        bitField0_ = (bitField0_ & ~0x00000001);
         onChanged();
         return this;
       }
@@ -972,10 +964,12 @@ public final class Grpc {
        */
       public Builder setPathBytes(
           com.google.protobuf.ByteString value) {
-        if (value == null) { throw new NullPointerException(); }
-        checkByteStringIsUtf8(value);
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
         path_ = value;
-        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -1075,6 +1069,11 @@ public final class Grpc {
       return new Status();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return transmission.Grpc.internal_static_transmission_Status_descriptor;
@@ -1089,7 +1088,7 @@ public final class Grpc {
     }
 
     public static final int STATUS_FIELD_NUMBER = 1;
-    private boolean status_ = false;
+    private boolean status_;
     /**
      * <code>bool status = 1;</code>
      * @return The status.
@@ -1209,13 +1208,11 @@ public final class Grpc {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static transmission.Grpc.Status parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static transmission.Grpc.Status parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1290,8 +1287,8 @@ public final class Grpc {
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        bitField0_ = 0;
         status_ = false;
+
         return this;
       }
 
@@ -1318,16 +1315,9 @@ public final class Grpc {
       @java.lang.Override
       public transmission.Grpc.Status buildPartial() {
         transmission.Grpc.Status result = new transmission.Grpc.Status(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        result.status_ = status_;
         onBuilt();
         return result;
-      }
-
-      private void buildPartial0(transmission.Grpc.Status result) {
-        int from_bitField0_ = bitField0_;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.status_ = status_;
-        }
       }
 
       @java.lang.Override
@@ -1405,7 +1395,7 @@ public final class Grpc {
                 break;
               case 8: {
                 status_ = input.readBool();
-                bitField0_ |= 0x00000001;
+
                 break;
               } // case 8
               default: {
@@ -1423,7 +1413,6 @@ public final class Grpc {
         } // finally
         return this;
       }
-      private int bitField0_;
 
       private boolean status_ ;
       /**
@@ -1440,9 +1429,8 @@ public final class Grpc {
        * @return This builder for chaining.
        */
       public Builder setStatus(boolean value) {
-
+        
         status_ = value;
-        bitField0_ |= 0x00000001;
         onChanged();
         return this;
       }
@@ -1451,7 +1439,7 @@ public final class Grpc {
        * @return This builder for chaining.
        */
       public Builder clearStatus() {
-        bitField0_ = (bitField0_ & ~0x00000001);
+        
         status_ = false;
         onChanged();
         return this;
@@ -1576,6 +1564,11 @@ public final class Grpc {
       return new SendFile();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return transmission.Grpc.internal_static_transmission_SendFile_descriptor;
@@ -1589,7 +1582,6 @@ public final class Grpc {
               transmission.Grpc.SendFile.class, transmission.Grpc.SendFile.Builder.class);
     }
 
-    private int bitField0_;
     public static final int PATH_TO_NEW_FILE_FIELD_NUMBER = 1;
     private transmission.Grpc.Path pathToNewFile_;
     /**
@@ -1598,7 +1590,7 @@ public final class Grpc {
      */
     @java.lang.Override
     public boolean hasPathToNewFile() {
-      return ((bitField0_ & 0x00000001) != 0);
+      return pathToNewFile_ != null;
     }
     /**
      * <code>.transmission.Path path_to_new_file = 1;</code>
@@ -1613,7 +1605,7 @@ public final class Grpc {
      */
     @java.lang.Override
     public transmission.Grpc.PathOrBuilder getPathToNewFileOrBuilder() {
-      return pathToNewFile_ == null ? transmission.Grpc.Path.getDefaultInstance() : pathToNewFile_;
+      return getPathToNewFile();
     }
 
     public static final int BINARY_FILE_FIELD_NUMBER = 2;
@@ -1624,7 +1616,7 @@ public final class Grpc {
      */
     @java.lang.Override
     public boolean hasBinaryFile() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return binaryFile_ != null;
     }
     /**
      * <code>.transmission.Binary binary_file = 2;</code>
@@ -1639,7 +1631,7 @@ public final class Grpc {
      */
     @java.lang.Override
     public transmission.Grpc.BinaryOrBuilder getBinaryFileOrBuilder() {
-      return binaryFile_ == null ? transmission.Grpc.Binary.getDefaultInstance() : binaryFile_;
+      return getBinaryFile();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -1656,10 +1648,10 @@ public final class Grpc {
     @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      if (((bitField0_ & 0x00000001) != 0)) {
+      if (pathToNewFile_ != null) {
         output.writeMessage(1, getPathToNewFile());
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
+      if (binaryFile_ != null) {
         output.writeMessage(2, getBinaryFile());
       }
       getUnknownFields().writeTo(output);
@@ -1671,11 +1663,11 @@ public final class Grpc {
       if (size != -1) return size;
 
       size = 0;
-      if (((bitField0_ & 0x00000001) != 0)) {
+      if (pathToNewFile_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getPathToNewFile());
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
+      if (binaryFile_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getBinaryFile());
       }
@@ -1772,13 +1764,11 @@ public final class Grpc {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static transmission.Grpc.SendFile parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static transmission.Grpc.SendFile parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1842,33 +1832,27 @@ public final class Grpc {
 
       // Construct using transmission.Grpc.SendFile.newBuilder()
       private Builder() {
-        maybeForceBuilderInitialization();
+
       }
 
       private Builder(
           com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
         super(parent);
-        maybeForceBuilderInitialization();
-      }
-      private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
-          getPathToNewFileFieldBuilder();
-          getBinaryFileFieldBuilder();
-        }
+
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        bitField0_ = 0;
-        pathToNewFile_ = null;
-        if (pathToNewFileBuilder_ != null) {
-          pathToNewFileBuilder_.dispose();
+        if (pathToNewFileBuilder_ == null) {
+          pathToNewFile_ = null;
+        } else {
+          pathToNewFile_ = null;
           pathToNewFileBuilder_ = null;
         }
-        binaryFile_ = null;
-        if (binaryFileBuilder_ != null) {
-          binaryFileBuilder_.dispose();
+        if (binaryFileBuilder_ == null) {
+          binaryFile_ = null;
+        } else {
+          binaryFile_ = null;
           binaryFileBuilder_ = null;
         }
         return this;
@@ -1897,27 +1881,18 @@ public final class Grpc {
       @java.lang.Override
       public transmission.Grpc.SendFile buildPartial() {
         transmission.Grpc.SendFile result = new transmission.Grpc.SendFile(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
+        if (pathToNewFileBuilder_ == null) {
+          result.pathToNewFile_ = pathToNewFile_;
+        } else {
+          result.pathToNewFile_ = pathToNewFileBuilder_.build();
+        }
+        if (binaryFileBuilder_ == null) {
+          result.binaryFile_ = binaryFile_;
+        } else {
+          result.binaryFile_ = binaryFileBuilder_.build();
+        }
         onBuilt();
         return result;
-      }
-
-      private void buildPartial0(transmission.Grpc.SendFile result) {
-        int from_bitField0_ = bitField0_;
-        int to_bitField0_ = 0;
-        if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.pathToNewFile_ = pathToNewFileBuilder_ == null
-              ? pathToNewFile_
-              : pathToNewFileBuilder_.build();
-          to_bitField0_ |= 0x00000001;
-        }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.binaryFile_ = binaryFileBuilder_ == null
-              ? binaryFile_
-              : binaryFileBuilder_.build();
-          to_bitField0_ |= 0x00000002;
-        }
-        result.bitField0_ |= to_bitField0_;
       }
 
       @java.lang.Override
@@ -2000,14 +1975,14 @@ public final class Grpc {
                 input.readMessage(
                     getPathToNewFileFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000001;
+
                 break;
               } // case 10
               case 18: {
                 input.readMessage(
                     getBinaryFileFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000002;
+
                 break;
               } // case 18
               default: {
@@ -2025,7 +2000,6 @@ public final class Grpc {
         } // finally
         return this;
       }
-      private int bitField0_;
 
       private transmission.Grpc.Path pathToNewFile_;
       private com.google.protobuf.SingleFieldBuilderV3<
@@ -2035,7 +2009,7 @@ public final class Grpc {
        * @return Whether the pathToNewFile field is set.
        */
       public boolean hasPathToNewFile() {
-        return ((bitField0_ & 0x00000001) != 0);
+        return pathToNewFileBuilder_ != null || pathToNewFile_ != null;
       }
       /**
        * <code>.transmission.Path path_to_new_file = 1;</code>
@@ -2057,11 +2031,11 @@ public final class Grpc {
             throw new NullPointerException();
           }
           pathToNewFile_ = value;
+          onChanged();
         } else {
           pathToNewFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000001;
-        onChanged();
+
         return this;
       }
       /**
@@ -2071,11 +2045,11 @@ public final class Grpc {
           transmission.Grpc.Path.Builder builderForValue) {
         if (pathToNewFileBuilder_ == null) {
           pathToNewFile_ = builderForValue.build();
+          onChanged();
         } else {
           pathToNewFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000001;
-        onChanged();
+
         return this;
       }
       /**
@@ -2083,40 +2057,38 @@ public final class Grpc {
        */
       public Builder mergePathToNewFile(transmission.Grpc.Path value) {
         if (pathToNewFileBuilder_ == null) {
-          if (((bitField0_ & 0x00000001) != 0) &&
-            pathToNewFile_ != null &&
-            pathToNewFile_ != transmission.Grpc.Path.getDefaultInstance()) {
-            getPathToNewFileBuilder().mergeFrom(value);
+          if (pathToNewFile_ != null) {
+            pathToNewFile_ =
+              transmission.Grpc.Path.newBuilder(pathToNewFile_).mergeFrom(value).buildPartial();
           } else {
             pathToNewFile_ = value;
           }
+          onChanged();
         } else {
           pathToNewFileBuilder_.mergeFrom(value);
         }
-        if (pathToNewFile_ != null) {
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
+
         return this;
       }
       /**
        * <code>.transmission.Path path_to_new_file = 1;</code>
        */
       public Builder clearPathToNewFile() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        pathToNewFile_ = null;
-        if (pathToNewFileBuilder_ != null) {
-          pathToNewFileBuilder_.dispose();
+        if (pathToNewFileBuilder_ == null) {
+          pathToNewFile_ = null;
+          onChanged();
+        } else {
+          pathToNewFile_ = null;
           pathToNewFileBuilder_ = null;
         }
-        onChanged();
+
         return this;
       }
       /**
        * <code>.transmission.Path path_to_new_file = 1;</code>
        */
       public transmission.Grpc.Path.Builder getPathToNewFileBuilder() {
-        bitField0_ |= 0x00000001;
+        
         onChanged();
         return getPathToNewFileFieldBuilder().getBuilder();
       }
@@ -2156,7 +2128,7 @@ public final class Grpc {
        * @return Whether the binaryFile field is set.
        */
       public boolean hasBinaryFile() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return binaryFileBuilder_ != null || binaryFile_ != null;
       }
       /**
        * <code>.transmission.Binary binary_file = 2;</code>
@@ -2178,11 +2150,11 @@ public final class Grpc {
             throw new NullPointerException();
           }
           binaryFile_ = value;
+          onChanged();
         } else {
           binaryFileBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000002;
-        onChanged();
+
         return this;
       }
       /**
@@ -2192,11 +2164,11 @@ public final class Grpc {
           transmission.Grpc.Binary.Builder builderForValue) {
         if (binaryFileBuilder_ == null) {
           binaryFile_ = builderForValue.build();
+          onChanged();
         } else {
           binaryFileBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
-        onChanged();
+
         return this;
       }
       /**
@@ -2204,40 +2176,38 @@ public final class Grpc {
        */
       public Builder mergeBinaryFile(transmission.Grpc.Binary value) {
         if (binaryFileBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            binaryFile_ != null &&
-            binaryFile_ != transmission.Grpc.Binary.getDefaultInstance()) {
-            getBinaryFileBuilder().mergeFrom(value);
+          if (binaryFile_ != null) {
+            binaryFile_ =
+              transmission.Grpc.Binary.newBuilder(binaryFile_).mergeFrom(value).buildPartial();
           } else {
             binaryFile_ = value;
           }
+          onChanged();
         } else {
           binaryFileBuilder_.mergeFrom(value);
         }
-        if (binaryFile_ != null) {
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
+
         return this;
       }
       /**
        * <code>.transmission.Binary binary_file = 2;</code>
        */
       public Builder clearBinaryFile() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        binaryFile_ = null;
-        if (binaryFileBuilder_ != null) {
-          binaryFileBuilder_.dispose();
+        if (binaryFileBuilder_ == null) {
+          binaryFile_ = null;
+          onChanged();
+        } else {
+          binaryFile_ = null;
           binaryFileBuilder_ = null;
         }
-        onChanged();
+
         return this;
       }
       /**
        * <code>.transmission.Binary binary_file = 2;</code>
        */
       public transmission.Grpc.Binary.Builder getBinaryFileBuilder() {
-        bitField0_ |= 0x00000002;
+        
         onChanged();
         return getBinaryFileFieldBuilder().getBuilder();
       }
@@ -2388,6 +2358,11 @@ public final class Grpc {
       return new TakeFile();
     }
 
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
       return transmission.Grpc.internal_static_transmission_TakeFile_descriptor;
@@ -2436,7 +2411,7 @@ public final class Grpc {
      */
     @java.lang.Override
     public boolean hasBoolStatus() {
-      return ((bitField0_ & 0x00000002) != 0);
+      return boolStatus_ != null;
     }
     /**
      * <code>.transmission.Status bool_status = 2;</code>
@@ -2451,7 +2426,7 @@ public final class Grpc {
      */
     @java.lang.Override
     public transmission.Grpc.StatusOrBuilder getBoolStatusOrBuilder() {
-      return boolStatus_ == null ? transmission.Grpc.Status.getDefaultInstance() : boolStatus_;
+      return getBoolStatus();
     }
 
     private byte memoizedIsInitialized = -1;
@@ -2471,7 +2446,7 @@ public final class Grpc {
       if (((bitField0_ & 0x00000001) != 0)) {
         output.writeMessage(1, getBinaryFile());
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
+      if (boolStatus_ != null) {
         output.writeMessage(2, getBoolStatus());
       }
       getUnknownFields().writeTo(output);
@@ -2487,7 +2462,7 @@ public final class Grpc {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, getBinaryFile());
       }
-      if (((bitField0_ & 0x00000002) != 0)) {
+      if (boolStatus_ != null) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, getBoolStatus());
       }
@@ -2584,13 +2559,11 @@ public final class Grpc {
       return com.google.protobuf.GeneratedMessageV3
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
-
     public static transmission.Grpc.TakeFile parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return com.google.protobuf.GeneratedMessageV3
           .parseDelimitedWithIOException(PARSER, input);
     }
-
     public static transmission.Grpc.TakeFile parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2666,21 +2639,21 @@ public final class Grpc {
         if (com.google.protobuf.GeneratedMessageV3
                 .alwaysUseFieldBuilders) {
           getBinaryFileFieldBuilder();
-          getBoolStatusFieldBuilder();
         }
       }
       @java.lang.Override
       public Builder clear() {
         super.clear();
-        bitField0_ = 0;
-        binaryFile_ = null;
-        if (binaryFileBuilder_ != null) {
-          binaryFileBuilder_.dispose();
-          binaryFileBuilder_ = null;
+        if (binaryFileBuilder_ == null) {
+          binaryFile_ = null;
+        } else {
+          binaryFileBuilder_.clear();
         }
-        boolStatus_ = null;
-        if (boolStatusBuilder_ != null) {
-          boolStatusBuilder_.dispose();
+        bitField0_ = (bitField0_ & ~0x00000001);
+        if (boolStatusBuilder_ == null) {
+          boolStatus_ = null;
+        } else {
+          boolStatus_ = null;
           boolStatusBuilder_ = null;
         }
         return this;
@@ -2709,27 +2682,24 @@ public final class Grpc {
       @java.lang.Override
       public transmission.Grpc.TakeFile buildPartial() {
         transmission.Grpc.TakeFile result = new transmission.Grpc.TakeFile(this);
-        if (bitField0_ != 0) { buildPartial0(result); }
-        onBuilt();
-        return result;
-      }
-
-      private void buildPartial0(transmission.Grpc.TakeFile result) {
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) != 0)) {
-          result.binaryFile_ = binaryFileBuilder_ == null
-              ? binaryFile_
-              : binaryFileBuilder_.build();
+          if (binaryFileBuilder_ == null) {
+            result.binaryFile_ = binaryFile_;
+          } else {
+            result.binaryFile_ = binaryFileBuilder_.build();
+          }
           to_bitField0_ |= 0x00000001;
         }
-        if (((from_bitField0_ & 0x00000002) != 0)) {
-          result.boolStatus_ = boolStatusBuilder_ == null
-              ? boolStatus_
-              : boolStatusBuilder_.build();
-          to_bitField0_ |= 0x00000002;
+        if (boolStatusBuilder_ == null) {
+          result.boolStatus_ = boolStatus_;
+        } else {
+          result.boolStatus_ = boolStatusBuilder_.build();
         }
-        result.bitField0_ |= to_bitField0_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
       }
 
       @java.lang.Override
@@ -2819,7 +2789,7 @@ public final class Grpc {
                 input.readMessage(
                     getBoolStatusFieldBuilder().getBuilder(),
                     extensionRegistry);
-                bitField0_ |= 0x00000002;
+
                 break;
               } // case 18
               default: {
@@ -2869,11 +2839,11 @@ public final class Grpc {
             throw new NullPointerException();
           }
           binaryFile_ = value;
+          onChanged();
         } else {
           binaryFileBuilder_.setMessage(value);
         }
         bitField0_ |= 0x00000001;
-        onChanged();
         return this;
       }
       /**
@@ -2883,11 +2853,11 @@ public final class Grpc {
           transmission.Grpc.Binary.Builder builderForValue) {
         if (binaryFileBuilder_ == null) {
           binaryFile_ = builderForValue.build();
+          onChanged();
         } else {
           binaryFileBuilder_.setMessage(builderForValue.build());
         }
         bitField0_ |= 0x00000001;
-        onChanged();
         return this;
       }
       /**
@@ -2896,32 +2866,31 @@ public final class Grpc {
       public Builder mergeBinaryFile(transmission.Grpc.Binary value) {
         if (binaryFileBuilder_ == null) {
           if (((bitField0_ & 0x00000001) != 0) &&
-            binaryFile_ != null &&
-            binaryFile_ != transmission.Grpc.Binary.getDefaultInstance()) {
-            getBinaryFileBuilder().mergeFrom(value);
+              binaryFile_ != null &&
+              binaryFile_ != transmission.Grpc.Binary.getDefaultInstance()) {
+            binaryFile_ =
+              transmission.Grpc.Binary.newBuilder(binaryFile_).mergeFrom(value).buildPartial();
           } else {
             binaryFile_ = value;
           }
+          onChanged();
         } else {
           binaryFileBuilder_.mergeFrom(value);
         }
-        if (binaryFile_ != null) {
-          bitField0_ |= 0x00000001;
-          onChanged();
-        }
+        bitField0_ |= 0x00000001;
         return this;
       }
       /**
        * <code>optional .transmission.Binary binary_file = 1;</code>
        */
       public Builder clearBinaryFile() {
-        bitField0_ = (bitField0_ & ~0x00000001);
-        binaryFile_ = null;
-        if (binaryFileBuilder_ != null) {
-          binaryFileBuilder_.dispose();
-          binaryFileBuilder_ = null;
+        if (binaryFileBuilder_ == null) {
+          binaryFile_ = null;
+          onChanged();
+        } else {
+          binaryFileBuilder_.clear();
         }
-        onChanged();
+        bitField0_ = (bitField0_ & ~0x00000001);
         return this;
       }
       /**
@@ -2968,7 +2937,7 @@ public final class Grpc {
        * @return Whether the boolStatus field is set.
        */
       public boolean hasBoolStatus() {
-        return ((bitField0_ & 0x00000002) != 0);
+        return boolStatusBuilder_ != null || boolStatus_ != null;
       }
       /**
        * <code>.transmission.Status bool_status = 2;</code>
@@ -2990,11 +2959,11 @@ public final class Grpc {
             throw new NullPointerException();
           }
           boolStatus_ = value;
+          onChanged();
         } else {
           boolStatusBuilder_.setMessage(value);
         }
-        bitField0_ |= 0x00000002;
-        onChanged();
+
         return this;
       }
       /**
@@ -3004,11 +2973,11 @@ public final class Grpc {
           transmission.Grpc.Status.Builder builderForValue) {
         if (boolStatusBuilder_ == null) {
           boolStatus_ = builderForValue.build();
+          onChanged();
         } else {
           boolStatusBuilder_.setMessage(builderForValue.build());
         }
-        bitField0_ |= 0x00000002;
-        onChanged();
+
         return this;
       }
       /**
@@ -3016,40 +2985,38 @@ public final class Grpc {
        */
       public Builder mergeBoolStatus(transmission.Grpc.Status value) {
         if (boolStatusBuilder_ == null) {
-          if (((bitField0_ & 0x00000002) != 0) &&
-            boolStatus_ != null &&
-            boolStatus_ != transmission.Grpc.Status.getDefaultInstance()) {
-            getBoolStatusBuilder().mergeFrom(value);
+          if (boolStatus_ != null) {
+            boolStatus_ =
+              transmission.Grpc.Status.newBuilder(boolStatus_).mergeFrom(value).buildPartial();
           } else {
             boolStatus_ = value;
           }
+          onChanged();
         } else {
           boolStatusBuilder_.mergeFrom(value);
         }
-        if (boolStatus_ != null) {
-          bitField0_ |= 0x00000002;
-          onChanged();
-        }
+
         return this;
       }
       /**
        * <code>.transmission.Status bool_status = 2;</code>
        */
       public Builder clearBoolStatus() {
-        bitField0_ = (bitField0_ & ~0x00000002);
-        boolStatus_ = null;
-        if (boolStatusBuilder_ != null) {
-          boolStatusBuilder_.dispose();
+        if (boolStatusBuilder_ == null) {
+          boolStatus_ = null;
+          onChanged();
+        } else {
+          boolStatus_ = null;
           boolStatusBuilder_ = null;
         }
-        onChanged();
+
         return this;
       }
       /**
        * <code>.transmission.Status bool_status = 2;</code>
        */
       public transmission.Grpc.Status.Builder getBoolStatusBuilder() {
-        bitField0_ |= 0x00000002;
+        
         onChanged();
         return getBoolStatusFieldBuilder().getBuilder();
       }
