@@ -11,13 +11,13 @@ type FetchFilesResponse struct {
 
 type UploadFileModel struct {
 	Id        string         `json:id`
-	Name      string         `json:name`
+	Path      string         `json:path`
 	Workspace WorkspaceModel `json:workspace`
 }
 
 type DownloadFileModel struct {
 	Id        string         `json:id`
-	Name      string         `json:name`
+	Path      string         `json:path`
 	Workspace WorkspaceModel `json:workspace`
 }
 
