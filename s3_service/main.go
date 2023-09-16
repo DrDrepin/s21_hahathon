@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	minio_service "hahaton/grpc/transmission"
 	"hahaton/minio"
+	minio_service "hahaton/minio-service"
 	"log"
 	"net"
 	"os"
@@ -22,16 +22,17 @@ func (s *server) SendFileToServer(ctx context.Context, req *minio_service.SendFi
 		Status: true,
 	}, nil
 }
-func (s *server) TakeFileFromServer(ctx context.Context, req *minio_service.Path) (*minio_service.TakeFile, error) {
-	return &minio_service.TakeFile{
-		BoolStatus: &minio_service.Status{
-			Status: true,
-		},
-		BinaryFile: &minio_service.Binary{
-			Binary: make([][]byte, 0),
-		},
-	}, nil
-}
+
+//	func (s *server) TakeFileFromServer(ctx context.Context, req *minio_service.Path) (*minio_service.TakeFile, error) {
+//		return &minio_service.TakeFile{
+//			BoolStatus: &minio_service.Status{
+//				Status: true,
+//			},
+//			BinaryFile: &minio_service.Binary{
+//				Binary: make([][]byte, 0),
+//			},
+//		}, nil
+//	}
 func (s *server) DeleteFileOnServer(ctx context.Context, req *minio_service.Path) (*minio_service.Status, error) {
 
 	minio.DeleteFile(req.Path, "work1")
@@ -54,6 +55,7 @@ func main() {
 	s := grpc.NewServer(opts...)
 
 	minio_service.RegisterTransmissionServer(s, &server{})
+
 	go func() {
 		fmt.Println("Starting Server...")
 		if err := s.Serve(lis); err != nil {
@@ -61,11 +63,9 @@ func main() {
 		}
 	}()
 
-	// Wait for Control C to exit
 	ch := make(chan os.Signal, 1)
 	signal.Notify(ch, os.Interrupt)
 
-	// Block until a signal is received
 	<-ch
 	fmt.Println("Goodbye")
 
