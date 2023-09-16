@@ -19,8 +19,6 @@ SECRET_KEY = 'hahathon'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-####################################
-
 app = FastAPI(
     title='Gateway'
 )
@@ -34,7 +32,8 @@ def get_password_hash(password: str) -> str:
 
 def get_bad_answer():
     return {'data': False, 'status': 'EROR', 'code': 501}
-####################################
+
+### use class
 
 class BodyRead(BaseModel): 
     path: str
@@ -67,7 +66,7 @@ class DataBase(BaseModel):
 class DataFile(BaseModel):
     data: str
 
-####################################
+### testing 
 
 data_base = [
     {'folder': 'media1', 'path': '/foto/test1.png', 'data': '01010100'},
@@ -102,7 +101,7 @@ users = [
 ]
 
 
-####################################
+### helpers
 
 def authenticate_user(username: str, password: str):
     for user in users:
@@ -123,7 +122,7 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 def set_answer_good(response):
     return {"status": 200, "data": response, "detail": "OK"}
 
-####################################
+### use workspace and user
 
 # check user and set new token - no auth
 @app.post('/token')
@@ -140,7 +139,7 @@ def login_for_access_token(username: str, password: str):
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
 
-# create workspace - no auth
+# create workspace and create user - no auth 
 @app.post('/create_workspace')
 def create_workspace(workspace: WorkSpace):
     all_workspace.append(WorkSpace(login=workspace.login, password=get_password_hash(workspace.password), workspace_name=workspace.workspace_name))
@@ -162,6 +161,8 @@ def create_workspace(task: ReadWorkSpace, current_user: User = Depends(oauth2_sc
             response.append(data)
             offset += 1
     return {'data': response, 'status': 'OK', 'code': 200}
+
+### use files
 
 @app.get('/delete_file/{path}')
 def upload_file(path: str, current_user: User = Depends(oauth2_scheme)):
@@ -193,6 +194,8 @@ def give_file(path: str, current_user: User = Depends(oauth2_scheme)):
             return {'data': file.data, 'status': 'OK', 'code': 200}
     return get_bad_answer()
 
+### use folders
+
 @app.get('/create_folder/{folder}')
 def create_folder(folder: str, current_user: User = Depends(oauth2_scheme)):
     return {'data': folder, 'status': 'OK', 'code': 200}
@@ -205,7 +208,7 @@ def delete_folder(folder: str, current_user: User = Depends(oauth2_scheme)):
 def give_folder(folder: str, current_user: User = Depends(oauth2_scheme)):
     return {'data': folder, 'status': 'OK', 'code': 200}
 
-####################################
+### use grpc
 
 # test grpc
 @app.get('/test')
@@ -217,7 +220,7 @@ def test():
         print(responce)
     pass
 
-####################################
+### logs output - logging.info()
 
 logging.basicConfig(
     level=logging.INFO, 
