@@ -41,7 +41,7 @@ class BodyRead(BaseModel):
 
 class File(BaseModel):
     path: str  
-    data: bytes
+    data: str
 
 class User(BaseModel):
     login: str   
@@ -62,6 +62,9 @@ class DataBase(BaseModel):
     path: str
     data: str 
 
+class DataFile(BaseModel):
+    data: str
+
 ####################################
 
 data_base = [
@@ -77,6 +80,13 @@ data_base = [
     {'folder': 'media10', 'path': '/foto/test10.png', 'data': '0101010'},
     {'folder': 'media11', 'path': '/foto/test11.png', 'data': '0101010'},
     {'folder': 'media12', 'path': '/video/test12.png', 'data': '1010101'}
+]
+
+files = [
+    File(path='foto', data='01010100'),
+    File(path='/foto/test4.png', data='01010100'),
+    File(path='/video/test1.png', data='01010100'),
+    File(path='/foto/test8.png', data='01010100')
 ]
 
 all_workspace = [
@@ -150,6 +160,36 @@ def create_workspace(task: ReadWorkSpace, current_user: User = Depends(oauth2_sc
             response.append(data)
             offset += 1
     return {'data': response, 'status': 'OK', 'code': 200}
+
+@app.get('/delete_file/{path}')
+def upload_file(path: str, current_user: User = Depends(oauth2_scheme)):
+    for file in files:
+        if file.path == path:
+            files.remove(file)
+            return {'data': path, 'status': 'OK', 'code': 200}
+    return {'data': False, 'status': 'EROR', 'code': 501}
+
+@app.post('/upload_file/{path}')
+def upload_file(task: DataFile, path: str, current_user: User = Depends(oauth2_scheme)):
+    newFile = File(path = path, data = task.data)
+    files.append(newFile)
+    return {'data': path, 'status': 'OK', 'code': 200}
+
+@app.post('/replace_file/{path}')
+def replace_file(task: DataFile, path: str, current_user: User = Depends(oauth2_scheme)):
+    data = task.data
+    for file in files:
+        if file.path == path:
+            file.path = data
+            return {'data': path, 'status': 'OK', 'code': 200}
+    return {'data': False, 'status': 'EROR', 'code': 501}
+
+@app.get('/give_file/{path}')
+def give_file(path: str, current_user: User = Depends(oauth2_scheme)):
+    for file in files:
+        if file.path == path:
+            return {'data': file.data, 'status': 'OK', 'code': 200}
+    return {'data': False, 'status': 'EROR', 'code': 501}
 
 ####################################
 
