@@ -1,21 +1,17 @@
 from typing import List
 import logging
-import jwt
+from jose import jwt
 from pydantic import BaseModel, Field
 from fastapi import FastAPI, status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
-
+import array
 import grpc
 import grpc_helper
 import grpc_pb2 as pb2
 import grpc_pb2_grpc as grpc_pb2
 
-
-# import grpc
-# import my_service_pb2
-# import my_service_pb2_grpc
 import http.client
 import json
 
@@ -23,64 +19,78 @@ SECRET_KEY = 'hahathon'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
+####################################
+
 app = FastAPI(
     title='Gateway'
-)
-
-# def com_grpc():
-#     channel = grpc.insecure_channel('localhost:8785')
-#     client = my_service_pb2_grpc.MyServiceStub(channel)
-#     request = my_service_pb2.MyRequest(name='Alice')
-#     response = client.ProcessData(request)
-#     logging.info(response.message)
-
-def com_push():
-    conn = http.client.HTTPSConnection("127.0.0.1", 9999)
-    payload = json.dumps([
-    {
-        "path": "/123",
-        "data": "string",
-        "folder": True
-    }
-    ])
-    headers = {
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJnYWxpb25tZSIsImV4cCI6MTY5NDg1NDY2M30.Vf8r7Xh4XQ7mKU8WY2gX4PPiO2uvvv_OtyOgola8QC8',
-    'Content-Type': 'application/json'
-    }
-    conn.request("POST", "/put_files", payload, headers)
-    res = conn.getresponse()
-    data = res.read()
-    logging.info(data.decode("utf-8"))
-
-
-logging.basicConfig(
-    level=logging.INFO, 
-    format='%(asctime)s %(levelname)s %(message)s',
-    handlers=[
-        logging.FileHandler("app.log"), 
-        logging.StreamHandler()  
-    ]
 )
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token') 
 
+def get_password_hash(password: str) -> str:
+    return pwd_context.hash(password)
+
+####################################
+
 class BodyRead(BaseModel): 
     path: str
-    skip: int = Field(..., ge=0)   
-    tack: int = Field(..., ge=0)   
+    skip: int
+    tack: int
 
 class File(BaseModel):
     path: str  
-    data: str = Field(..., min_length=1) 
+    data: bytes
 
 class User(BaseModel):
-    login: str = Field(..., min_length=6)    
-    password: str = Field(..., min_length=3)   
+    login: str   
+    password: str
 
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+class WorkSpace(BaseModel):
+    login: str
+    password: str
+    workspace_name: str
+
+class ReadWorkSpace(BaseModel):
+    path: str  
+    limit: int
+    offset: int 
+
+class DataBase(BaseModel):
+    folder: str  
+    path: str
+    data: str 
+
+####################################
+
+data_base = [
+    {'folder': 'media1', 'path': '/foto/test1.png', 'data': '01010100'},
+    {'folder': 'media2', 'path': '/foto/test2.png', 'data': '01010101'},
+    {'folder': 'media3', 'path': '/video/test3.png', 'data': '01010101'},
+    {'folder': 'media4', 'path': '/foto/test4.png', 'data': '01010101'},
+    {'folder': 'media5', 'path': '/foto/test5.png', 'data': '01010101'},
+    {'folder': 'media6', 'path': '/video/test6.png', 'data': '01010101'},
+    {'folder': 'media7', 'path': '/foto/test7.png', 'data': '01010101'},
+    {'folder': 'media8', 'path': '/video/test8.png', 'data': '01010101'},
+    {'folder': 'media9', 'path': '/foto/test9.png', 'data': '01010101'},
+    {'folder': 'media10', 'path': '/foto/test10.png', 'data': '0101010'},
+    {'folder': 'media11', 'path': '/foto/test11.png', 'data': '0101010'},
+    {'folder': 'media12', 'path': '/video/test12.png', 'data': '1010101'}
+]
+
+all_workspace = [
+    WorkSpace(login='galionme1', password=get_password_hash('123'), workspace_name='name1'),
+    WorkSpace(login='galionme2', password=get_password_hash('456'), workspace_name='name2')
+]
+
+users = [
+    User(login='galionme1', password=get_password_hash('123')),
+    User(login='galionme2', password=get_password_hash('456'))
+]
+
+
+####################################
 
 def authenticate_user(username: str, password: str):
     for user in users:
@@ -98,6 +108,12 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+def set_answer_good(response):
+    return {"status": 200, "data": response, "detail": "OK"}
+
+####################################
+
+# check user and set new token - no auth
 @app.post('/token')
 def login_for_access_token(username: str, password: str):
     user = authenticate_user(username, password)
@@ -112,46 +128,32 @@ def login_for_access_token(username: str, password: str):
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
 
-@app.get('/protected_route')
-def protected_route(current_user: User = Depends(oauth2_scheme)):
-    return {'message': 'Авторизированы успешно!'}
+# create workspace - no auth
+@app.post('/create_workspace')
+def create_workspace(workspace: WorkSpace):
+    all_workspace.append(WorkSpace(login=workspace.login, password=get_password_hash(workspace.password), workspace_name=workspace.workspace_name))
 
-data_base = [
-    {'path': '/foto/test1.png', 'data': '0101010'},
-    {'path': '/video/test2.png', 'data': '1010101'}
-]
-
-def set_answer_good(response):
-    return {"status": 200, "data": response, "detail": "OK"}
-
-def set_answer_bad():
-    return {"status": 404, "data": "EROR", "detail": "Неправильный логин или пароль"}
-
-@app.post('/put_files')
-def put_files(file: List[File],current_user: User = Depends(oauth2_scheme)):
-    data_base.extend(file)
-    return set_answer_good(data_base)
-
-@app.get('/delete_file')
-def delete_file(path: str, current_user: User = Depends(oauth2_scheme)):
-    for file in data_base:
-        if file.get('path') == path:
-            data_base.remove(file)
-    return set_answer_good(data_base)
-
-@app.post('/read_files') 
-def read_files(body: BodyRead, current_user: User = Depends(oauth2_scheme)):
-    return set_answer_good(body)
-
-@app.post('/create_user')
-def put_files(user: User):
-    users.append(User(login=user.login, password=get_password_hash(user.password)))
     access_token = create_access_token(
-        data={'sub': user.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        data={'sub': workspace.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {'access_token': access_token, 'token_type': 'bearer'}
 
+@app.post('/read_workspace')
+def create_workspace(task: ReadWorkSpace, current_user: User = Depends(oauth2_scheme)):
+    path = task.path
+    offset = task.offset
+    limit = task.limit - 1
+    response = []
+    for data in data_base:
+        if (offset > limit): break
+        if (data.get('path').find(path)):
+            response.append(data)
+            offset += 1
+    return {'data': response, 'status': 'OK', 'code': 200}
 
+####################################
+
+# test grpc
 @app.get('/test')
 def test():
     with grpc.insecure_channel('localhost:8785') as channel:
@@ -161,7 +163,13 @@ def test():
         print(responce)
     pass
 
-users = [
-    User(login='galionme', password=get_password_hash('123')),
-    User(login='user_login2', password=get_password_hash('user_password2'))
-]
+####################################
+
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[
+        logging.FileHandler("app.log"), 
+        logging.StreamHandler()  
+    ]
+)
