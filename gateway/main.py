@@ -13,12 +13,10 @@ import grpc_helper
 import grpc_pb2 as pb2
 import grpc_pb2_grpc as grpc_pb2
 
-import http.client
-import json
-
 SECRET_KEY = 'hahathon'
 ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+gRPC_ADRS = 'localhost:8785'
 
 app = FastAPI(
     title='Gateway'
@@ -79,7 +77,7 @@ def create_access_token(data: dict, workspace: str, password: str, expires_delta
 def decode_jwt(token):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-        # if 'exp' in payload and payload['exp'] < datetime.datetime.utcnow():
+        # if 'exp' in payload and payload['exp'] < datetime.utcnow():
         #     return None
         # else:
         return OrderedDict(payload)
@@ -158,56 +156,91 @@ def give_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
 
 
 # module gRPC #
+#user
 def gRPC_CreateUser(login: str, password: str, workspace_id: str):
-    with grpc.insecure_channel('localhost:8785') as channel:
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.User(login=login, password=password, workspace_id=workspace_id)
         responce = stub.CreateUser(req)
         logging.info(responce)
     return responce
 
+def gRPC_ReadUser(login: str, password: str, workspace_id: str):
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
+        stub = grpc_pb2.TransmissionStub(channel)
+        req = pb2.User(login=login, password=password, workspace_id=workspace_id)
+        responce = stub.ReadUser(req)
+        logging.info(responce)
+    return responce
+
+def gRPC_UpdateUser(login: str, password: str, workspace_id: str):
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
+        stub = grpc_pb2.TransmissionStub(channel)
+        req = pb2.User(login=login, password=password, workspace_id=workspace_id)
+        responce = stub.UpdateUser(req)
+        logging.info(responce)
+    return responce
+
+#workspace
 def gRPC_CreateWorkspace(name: str):
-    with grpc.insecure_channel('localhost:8785') as channel:
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.Workspace(name=name)
         responce = stub.CreateWorkspace(req)
         logging.info(responce)
     return responce
 
+#file
 def gRPC_CreateFile(path: str, workspace_id: str, buffer: bytes):
-    with grpc.insecure_channel('localhost:8785') as channel:
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.File(path=path, workspace_id=workspace_id, buffer=buffer)
         responce = stub.CreateFile(req)
         logging.info(responce)
     return responce
 
+def gRPC_DeleteFile(workspace_id: str, path:str):
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
+        stub = grpc_pb2.TransmissionStub(channel)
+        req = pb2.WorkspaceFile(workspace_id=workspace_id, path=path)
+        responce = stub.DeleteFile(req)
+        logging.info(responce)
+    return responce
+
 def gRPC_GetFile(workspace_id: str, path:str):
-    with grpc.insecure_channel('localhost:8785') as channel:
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.WorkspaceFile(workspace_id=workspace_id, path=path)
         responce = stub.GetFile(req)
         logging.info(responce)
     return responce
 
+#folder
 def gRPC_GetFolder(path: str, workspace_id: str):
-    with grpc.insecure_channel('localhost:8785') as channel:
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.Folder(path=path, workspace_id=workspace_id)
         responce = stub.GetFolder(req)
         logging.info(responce)
     return responce
 
-def gRPC_ReadUser(login: str, password: str, workspace_id: str):
-    with grpc.insecure_channel('localhost:8785') as channel:
+def gRPC_CreateFolde(path: str, workspace_id: str):
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
-        req = pb2.User(login=login, password=password, workspace_id=workspace_id)
-        responce = stub.GetFolder(req)
+        req = pb2.Folder(path=path, workspace_id=workspace_id)
+        responce = stub.CreateFolde(req)
+        logging.info(responce)
+    return responce
+
+def gRPC_DeleteFolder(path: str, workspace_id: str):
+    with grpc.insecure_channel(gRPC_ADRS) as channel:
+        stub = grpc_pb2.TransmissionStub(channel)
+        req = pb2.Folder(path=path, workspace_id=workspace_id)
+        responce = stub.DeleteFolder(req)
         logging.info(responce)
     return responce
 
 ### logs output - logging.info()
-
 logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s %(levelname)s %(message)s',

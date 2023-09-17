@@ -6,3 +6,5 @@ School 21 Dream Team: bullroag, spinachc, twitchfi, mordnore, galionme
     generate.sh
     source venv/bin/activate
     uvicorn main:app --reload --port 9999
+    
+    # обновить requr.txt for python #
