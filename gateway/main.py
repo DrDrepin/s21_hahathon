@@ -31,7 +31,7 @@ def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
 def get_bad_answer():
-    return {'data': False, 'status': 'EROR', 'code': 501}
+    return {'data': False, 'status': 'ERROR', 'code': 501}
 
 ### use class
 
@@ -80,12 +80,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def set_answer_good(response):
-    return {"status": 200, "data": response, "detail": "OK"}
-
 ### use workspace and user
 
-# check user and set new token - no auth
 @app.post('/token')
 def login_for_access_token(task: Person):
     login = task.login
@@ -102,11 +98,8 @@ def login_for_access_token(task: Person):
     )
     return {'access_token': access_token, 'token_type': 'Bearer'}
 
-# # create workspace and create user - no auth 
-
 @app.post('/create_user/{workspace_id}')
 def create_user(task: User, workspace_id: str):
-    logging.info('1')
     status = gRPC_CreateUser(task.login, task.password, workspace_id)
     if status == True:
         access_token = create_access_token(
@@ -120,30 +113,28 @@ def create_workspace(workspace_name: str):
     status = gRPC_CreateWorkspace(workspace_name)
     if status == True:
         return {'data': True, 'status': 'OK', 'code': 200}
-    return {'data': False, 'status': 'ERROR', 'code': 501}
+    return get_bad_answer()
 
 @app.post('/upload_file/{workspace_id}')
 def upload_file(task: File, workspace_id: str):
     status = gRPC_CreateFile(task.path, workspace_id, task.data)
     if status == True:
         return {'data': True, 'status': 'OK', 'code': 200}
-    return {'data': False, 'status': 'ERROR', 'code': 501}
+    return get_bad_answer()
 
 @app.get('/give_file/{workspace_id}/{path}')
 def give_file(workspace_id: str, path: str):
     File = gRPC_GetFile(workspace_id, path)
     if not File:
-        return {'data': False, 'status': 'ERROR', 'code': 501}
-    data = File.get("buffer")
-    return {'data': data, 'status': 'OK', 'code': 200}
+        return get_bad_answer()
+    return {'data': File, 'status': 'OK', 'code': 200}
 
 @app.get('/give_folder/{workspace_id}/{path}')
 def give_folder(workspace_id: str, path=str):
     File = gRPC_GetFolder(workspace_id, path)
     if not File:
-        return {'data': False, 'status': 'ERROR', 'code': 501}
-    data = File.get("buffer")
-    return {'data': data, 'status': 'OK', 'code': 200}
+        return get_bad_answer()
+    return {'data': File, 'status': 'OK', 'code': 200}
 
 
 
