@@ -112,6 +112,7 @@ def create_user(task: User, workspace_id: str):
         return {'access_token': access_token, 'token_type': 'Bearer'}
     return {'access_token': False, 'token_type': 'Bearer'}
 
+#file
 @app.get('/create_workspace')
 def create_workspace(current_user: TokenData = Depends(oauth2_scheme)):
     token = decode_jwt(current_user)
@@ -143,6 +144,18 @@ def give_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
         return get_bad_answer()
     return {'data': File, 'status': 'OK', 'code': 200}
 
+@app.get('/delete_file/{path}')
+def delete_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
+    token = decode_jwt(current_user)
+    User = gRPC_ReadUser(token.get('login'), token.get('password'), token.get('workspace_name'))
+    if not User: 
+        return get_bad_answer()
+    File = gRPC_DeleteFile(User.workspace_id, path)
+    if not File:
+        return get_bad_answer()
+    return {'data': File, 'status': 'OK', 'code': 200}
+
+#folder
 @app.get('/give_folder/{path}')
 def give_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
     token = decode_jwt(current_user)
@@ -151,6 +164,28 @@ def give_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
         return get_bad_answer() 
     File = gRPC_GetFolder(User.workspace_id, path)
     if not File:
+        return get_bad_answer()
+    return {'data': File, 'status': 'OK', 'code': 200}
+
+@app.get('/delete_folder/{path}')
+def delete_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
+    token = decode_jwt(current_user)
+    User = gRPC_ReadUser(token.get('login'), token.get('password'), token.get('workspace_name'))
+    if not User: 
+        return get_bad_answer() 
+    Status = gRPC_DeleteFolder(User.workspace_id, path)
+    if Status == False:
+        return get_bad_answer()
+    return {'data': File, 'status': 'OK', 'code': 200}
+
+@app.get('/create_folder/{path}')
+def create_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
+    token = decode_jwt(current_user)
+    User = gRPC_ReadUser(token.get('login'), token.get('password'), token.get('workspace_name'))
+    if not User: 
+        return get_bad_answer() 
+    Status = gRPC_CreateFolder(User.workspace_id, path)
+    if Status == False:
         return get_bad_answer()
     return {'data': File, 'status': 'OK', 'code': 200}
 
@@ -224,7 +259,7 @@ def gRPC_GetFolder(path: str, workspace_id: str):
         logging.info(responce)
     return responce
 
-def gRPC_CreateFolde(path: str, workspace_id: str):
+def gRPC_CreateFolder(path: str, workspace_id: str):
     with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.Folder(path=path, workspace_id=workspace_id)

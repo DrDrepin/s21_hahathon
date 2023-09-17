@@ -13,7 +13,7 @@ service Transmission {
     rpc CreateWorkspace(Workspace) returns (Status){}
 
     rpc CreateFile(File) returns (Status){}
-    rpc GetFile(WorkspaceFile) returns (File){}
+    rpc CreateFile(WorkspaceFile) returns (File){}
     rpc DeleteFile(File) returns (Status){}
 
     rpc CreateFolder(Folder) returns (Status){}
