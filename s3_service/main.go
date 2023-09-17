@@ -82,7 +82,8 @@ func (s *server) CreateFolder(ctx context.Context, req *minio_service.Folder) (*
 	return &responce, nil
 }
 func (s *server) GetFolder(ctx context.Context, req *minio_service.Folder) (*minio_service.Files, error) {
-	return &minio_service.Files{}, nil
+	resp := database.PullFolder(req.Path, req.WorkspaceId)
+	return &resp, nil
 }
 func (s *server) DeleteFolder(ctx context.Context, req *minio_service.Folder) (*minio_service.Status, error) {
 	var responce minio_service.Status

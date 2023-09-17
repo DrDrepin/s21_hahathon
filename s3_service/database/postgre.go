@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	fileprocessor "hahaton/file_processor"
 	"hahaton/minio"
 	minio_service "hahaton/minio-service"
 	"hahaton/types"
@@ -219,4 +220,29 @@ func DeleteFile() bool {
 
 	return true
 
+}
+
+func PullFolder(path string, workspace string) minio_service.Files {
+
+	files := minio_service.Files{}
+	scan := myPostgres.QueryRow(`select path from files where path like $1% and path not like $1/%/ and workspace_id = $2;`, path, workspace)
+	var file minio_service.File
+	switch err := scan.Scan(&files.Files); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		fmt.Println(file)
+	}
+
+	for _, el := range files.Files {
+
+		if strings.LastIndex(el.Path, "png") == len(el.Path)-3 || strings.LastIndex(el.Path, "jpg") == len(el.Path)-3 {
+			buffer := minio.UploadFile(workspace, el.Path)
+			compressed, _ := fileprocessor.CompressImage(buffer, 10)
+			el.Buffer = compressed
+		}
+
+	}
+
+	return files
 }
