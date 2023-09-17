@@ -128,12 +128,16 @@ func CreateBucket(workspace minio_service.Workspace) string {
 }
 
 func CreateFolder(folder minio_service.Folder) minio_service.Status {
-	_, err := myPostgres.Exec("insert into folders values(default,$1,$2);", folder.Path, folder.WorkspaceId)
+	fmt.Println("IA TUT FOLDER SOZDAL s paramammi" + folder.Path + folder.WorkspaceId)
+
+	_, err := myPostgres.Exec("insert into folders values(default,$1,NULL,$2);", folder.Path, folder.WorkspaceId)
 	var status minio_service.Status
 	status.Status = true
 	if err != nil {
+		fmt.Println(err)
 		status.Status = false
 	}
+	fmt.Println("IA TUT FOLDER SOZDAL")
 	return status
 }
 func GetFolder(folder minio_service.Folder) minio_service.Status {
