@@ -10,9 +10,9 @@ service Transmission {
     rpc UpdateUser(User) returns (User){}
     rpc ReadUser(User) returns (User){}
 
-    rpc CreateWorkspace(Workspace) returns (Status){}
+    rpc CreateWorkspace(Workspace) returns (ID){}
 
-    rpc CreateFile(File) returns (Status){}
+    rpc CreateFile(File) returns (ID){}
     rpc GetFile(WorkspaceFile) returns (File){}
     rpc DeleteFile(File) returns (Status){}
 
@@ -20,6 +20,10 @@ service Transmission {
     rpc GetFolder(Folder) returns (files){}
     rpc DeleteFolder(Folder) returns (Status){}
 
+}
+
+message ID{
+    string id = 1;
 }
 
 message files{

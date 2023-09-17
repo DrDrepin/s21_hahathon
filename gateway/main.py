@@ -12,6 +12,9 @@ import grpc_helper
 import grpc_pb2 as pb2
 import grpc_pb2_grpc as grpc_pb2
 
+from google.protobuf.json_format import Parse, ParseDict,MessageToDict
+import json
+
 import http.client
 import json
 
@@ -111,8 +114,10 @@ def create_user(task: User, workspace_id: str):
 @app.get('/create_workspace/{workspace_name}')
 def create_workspace(workspace_name: str):
     status = gRPC_CreateWorkspace(workspace_name)
-    if status == True:
-        return {'data': True, 'status': 'OK', 'code': 200}
+    message = MessageToDict(status)
+    print(message)
+    if status !="":
+        return {'data': True, 'status': 'OK', 'code': 200} #,"workspace_id":status["id"]
     return get_bad_answer()
 
 @app.post('/upload_file/{workspace_id}')

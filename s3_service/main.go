@@ -46,25 +46,28 @@ func (s *server) ReadUser(ctx context.Context, req *minio_service.User) (*minio_
 	responce = database.ReadUser(*req)
 	return &responce, nil
 }
-func (s *server) CreateWorkspace(ctx context.Context, req *minio_service.Workspace) (*minio_service.Status, error) {
-	var responce minio_service.Status
-	responce = database.CreateBucket(*req)
-	if responce.Status == false {
+func (s *server) CreateWorkspace(ctx context.Context, req *minio_service.Workspace) (*minio_service.ID, error) {
+	responce := minio_service.ID{}
+	responce.Id = database.CreateBucket(*req)
+
+	if responce.Id == "" {
 		return &responce, nil
 	}
 	minio.CreateBucket(req.Name)
 	return &responce, nil
 }
-func (s *server) CreateFile(ctx context.Context, req *minio_service.File) (*minio_service.Status, error) {
-	var responce minio_service.Status
-	responce = database.CreateFile(*req)
-
+func (s *server) CreateFile(ctx context.Context, req *minio_service.File) (*minio_service.ID, error) {
+	var responce minio_service.ID
+	responce.Id = database.CreateFile(*req)
+	name := database.GetWorkspaceName(req.WorkspaceId)
+	minio.DownloadFile(req.Buffer, req.Path, name)
 	return &responce, nil
 }
 func (s *server) GetFile(ctx context.Context, req *minio_service.WorkspaceFile) (*minio_service.File, error) {
 	var responce minio_service.File
 	path := database.GetFile(req.Path, req.WorkspaceId)
-	minio.DownloadFile(req.Buffer, path, req.WorkspaceId)
+	responce.Path = path
+	responce.Buffer = minio.UploadFile(req.WorkspaceId, path)
 	return &responce, nil
 }
 

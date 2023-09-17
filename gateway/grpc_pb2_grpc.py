@@ -32,12 +32,12 @@ class TransmissionStub(object):
         self.CreateWorkspace = channel.unary_unary(
                 '/transmission.Transmission/CreateWorkspace',
                 request_serializer=grpc__pb2.Workspace.SerializeToString,
-                response_deserializer=grpc__pb2.Status.FromString,
+                response_deserializer=grpc__pb2.ID.FromString,
                 )
         self.CreateFile = channel.unary_unary(
                 '/transmission.Transmission/CreateFile',
                 request_serializer=grpc__pb2.File.SerializeToString,
-                response_deserializer=grpc__pb2.Status.FromString,
+                response_deserializer=grpc__pb2.ID.FromString,
                 )
         self.GetFile = channel.unary_unary(
                 '/transmission.Transmission/GetFile',
@@ -150,12 +150,12 @@ def add_TransmissionServicer_to_server(servicer, server):
             'CreateWorkspace': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateWorkspace,
                     request_deserializer=grpc__pb2.Workspace.FromString,
-                    response_serializer=grpc__pb2.Status.SerializeToString,
+                    response_serializer=grpc__pb2.ID.SerializeToString,
             ),
             'CreateFile': grpc.unary_unary_rpc_method_handler(
                     servicer.CreateFile,
                     request_deserializer=grpc__pb2.File.FromString,
-                    response_serializer=grpc__pb2.Status.SerializeToString,
+                    response_serializer=grpc__pb2.ID.SerializeToString,
             ),
             'GetFile': grpc.unary_unary_rpc_method_handler(
                     servicer.GetFile,
@@ -256,7 +256,7 @@ class Transmission(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/transmission.Transmission/CreateWorkspace',
             grpc__pb2.Workspace.SerializeToString,
-            grpc__pb2.Status.FromString,
+            grpc__pb2.ID.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -273,7 +273,7 @@ class Transmission(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/transmission.Transmission/CreateFile',
             grpc__pb2.File.SerializeToString,
-            grpc__pb2.Status.FromString,
+            grpc__pb2.ID.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

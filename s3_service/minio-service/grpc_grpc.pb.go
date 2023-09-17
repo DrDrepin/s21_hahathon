@@ -38,8 +38,8 @@ type TransmissionClient interface {
 	CreateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	UpdateUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
 	ReadUser(ctx context.Context, in *User, opts ...grpc.CallOption) (*User, error)
-	CreateWorkspace(ctx context.Context, in *Workspace, opts ...grpc.CallOption) (*Status, error)
-	CreateFile(ctx context.Context, in *File, opts ...grpc.CallOption) (*Status, error)
+	CreateWorkspace(ctx context.Context, in *Workspace, opts ...grpc.CallOption) (*ID, error)
+	CreateFile(ctx context.Context, in *File, opts ...grpc.CallOption) (*ID, error)
 	GetFile(ctx context.Context, in *WorkspaceFile, opts ...grpc.CallOption) (*File, error)
 	DeleteFile(ctx context.Context, in *File, opts ...grpc.CallOption) (*Status, error)
 	CreateFolder(ctx context.Context, in *Folder, opts ...grpc.CallOption) (*Status, error)
@@ -82,8 +82,8 @@ func (c *transmissionClient) ReadUser(ctx context.Context, in *User, opts ...grp
 	return out, nil
 }
 
-func (c *transmissionClient) CreateWorkspace(ctx context.Context, in *Workspace, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *transmissionClient) CreateWorkspace(ctx context.Context, in *Workspace, opts ...grpc.CallOption) (*ID, error) {
+	out := new(ID)
 	err := c.cc.Invoke(ctx, Transmission_CreateWorkspace_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -91,8 +91,8 @@ func (c *transmissionClient) CreateWorkspace(ctx context.Context, in *Workspace,
 	return out, nil
 }
 
-func (c *transmissionClient) CreateFile(ctx context.Context, in *File, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *transmissionClient) CreateFile(ctx context.Context, in *File, opts ...grpc.CallOption) (*ID, error) {
+	out := new(ID)
 	err := c.cc.Invoke(ctx, Transmission_CreateFile_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -152,8 +152,8 @@ type TransmissionServer interface {
 	CreateUser(context.Context, *User) (*User, error)
 	UpdateUser(context.Context, *User) (*User, error)
 	ReadUser(context.Context, *User) (*User, error)
-	CreateWorkspace(context.Context, *Workspace) (*Status, error)
-	CreateFile(context.Context, *File) (*Status, error)
+	CreateWorkspace(context.Context, *Workspace) (*ID, error)
+	CreateFile(context.Context, *File) (*ID, error)
 	GetFile(context.Context, *WorkspaceFile) (*File, error)
 	DeleteFile(context.Context, *File) (*Status, error)
 	CreateFolder(context.Context, *Folder) (*Status, error)
@@ -175,10 +175,10 @@ func (UnimplementedTransmissionServer) UpdateUser(context.Context, *User) (*User
 func (UnimplementedTransmissionServer) ReadUser(context.Context, *User) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadUser not implemented")
 }
-func (UnimplementedTransmissionServer) CreateWorkspace(context.Context, *Workspace) (*Status, error) {
+func (UnimplementedTransmissionServer) CreateWorkspace(context.Context, *Workspace) (*ID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateWorkspace not implemented")
 }
-func (UnimplementedTransmissionServer) CreateFile(context.Context, *File) (*Status, error) {
+func (UnimplementedTransmissionServer) CreateFile(context.Context, *File) (*ID, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFile not implemented")
 }
 func (UnimplementedTransmissionServer) GetFile(context.Context, *WorkspaceFile) (*File, error) {

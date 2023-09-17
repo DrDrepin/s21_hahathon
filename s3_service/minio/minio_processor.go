@@ -25,6 +25,7 @@ func CreateBucket(name string) {
 	if err != nil || exists {
 		fmt.Println(err)
 		fmt.Println("Smth went wrong")
+		fmt.Println(name)
 
 		return
 	}
