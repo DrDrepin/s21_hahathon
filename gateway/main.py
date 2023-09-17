@@ -111,10 +111,12 @@ def login_for_access_token(task: Person):
 @app.post('/create_user/{workspace_id}')
 def create_user(task: User, workspace_id: str):
     status = gRPC_CreateUser(task.login, task.password, workspace_id)
-    if status == True:
+    message = MessageToDict(status)
+    print(message)
+    if message["login"] != "":
         access_token = create_access_token(
-            data={'sub': task.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-        )
+        data={'login': task.login}, workspace = message["workspaceId"], password = task.password, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
         return {'access_token': access_token, 'token_type': 'Bearer'}
     return {'access_token': False, 'token_type': 'Bearer'}
 
@@ -186,7 +188,7 @@ def delete_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
         return get_bad_answer()
     return {'data': File, 'status': 'OK', 'code': 200}
 
-@app.get('/create_folder/{path}')
+@app.get('/create_folder')
 def create_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
     token = decode_jwt(current_user)
     User = gRPC_ReadUser(token.get('login'), token.get('password'), token.get('workspace_name'))
