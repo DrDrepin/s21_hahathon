@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from typing import List
 import logging
 from jose import jwt
@@ -36,52 +37,45 @@ def get_password_hash(password: str) -> str:
 def get_bad_answer():
     return {'data': False, 'status': 'ERROR', 'code': 501}
 
-### use class
-
 class File(BaseModel):
-    path: str  
     data: bytes
 
 class User(BaseModel):
     login: str
     password: str
-
-class ReadWorkSpace(BaseModel):
-    path: str  
-    limit: int
-    offset: int 
  
 class Person(BaseModel):
     login: str
     password: str
+    workspace_name: str
 
-class DataFile(BaseModel):
-    data: str
+class TokenData(BaseModel):
+    login: str 
+    workspace_name: str 
+    exp: int
 
-Users = [
-    Person(login= 'usr', password=get_password_hash('123')),
-    Person(login= 'adm', password=get_password_hash('123'))
-]
-
-### testing 
-
-### helpers
-
-def authenticate_user(login: str, password: str):
-    for user in Users:
-        if user.login == login and pwd_context.verify(password, user.password):
-            return user
-    return None
-
-def create_access_token(data: dict, expires_delta: timedelta = None):
+def create_access_token(data: dict, workspace: str, password: str, expires_delta: timedelta = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({'workspace_name': workspace})
+    to_encode.update({'password': password})
     to_encode.update({'exp': expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+def decode_jwt(token):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
+        # if 'exp' in payload and payload['exp'] < datetime.datetime.utcnow():
+        #     return None
+        # else:
+        return OrderedDict(payload)
+    except jwt.ExpiredSignatureError:
+        return None
+
 
 ### use workspace and user
 
@@ -89,7 +83,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 def login_for_access_token(task: Person):
     login = task.login
     password = task.password
-    user = authenticate_user(login, password)
+    workspace_name = task.workspace_name
+    user = gRPC_ReadUser(login, password, workspace_name)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -97,22 +92,81 @@ def login_for_access_token(task: Person):
             headers={'Authorization': 'Bearer'},
         )
     access_token = create_access_token(
-        data={'sub': user.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        data={'login': login}, workspace = workspace_name, password = password, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     return {'access_token': access_token, 'token_type': 'Bearer'}
 
+# @app.post('/create_user/{workspace_id}')
+# def create_user(task: User, workspace_id: str):
+#     status = gRPC_CreateUser(task.login, task.password, workspace_id)
+#     if status == True:
+#         access_token = create_access_token(
+#             data={'sub': task.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+#         )
+#         return {'access_token': access_token, 'token_type': 'Bearer'}
+#     return {'access_token': False, 'token_type': 'Bearer'}
+
+# @app.get('/create_workspace')
+# def create_workspace(current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     workspace_name = token.workspace_name
+#     status = gRPC_CreateWorkspace(workspace_name)
+#     if status == True:
+#         return {'data': True, 'status': 'OK', 'code': 200}
+#     return get_bad_answer()
+
+# @app.post('/upload_file/{path}')
+# def upload_file(task: File, path: str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     User = gRPC_ReadUser(token.login, token.password, token.workspace_name)
+#     if not User: 
+#         return get_bad_answer()
+#     File = gRPC_GetFile(workspace_id, path)
+#     if not File:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+# @app.get('/give_file/{path}')
+# def give_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     User = gRPC_ReadUser(token.login, token.password, token.workspace_name)
+#     if not User: 
+#         return get_bad_answer()
+#     File = gRPC_GetFile(User.workspace_id, path)
+#     if not File:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+# @app.get('/give_folder/{path}')
+# def give_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     User = gRPC_ReadUser(token.login, token.password, token.workspace_name)
+#     if not User: 
+#         return get_bad_answer() 
+#     File = gRPC_GetFolder(User.workspace_id, path)
+#     if not File:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+
+#######
+
 @app.post('/create_user/{workspace_id}')
-def create_user(task: User, workspace_id: str):
-    status = gRPC_CreateUser(task.login, task.password, workspace_id)
+def create_user(workspace_id: str):
+    login = 'adm'
+    password = '123'
+    status = gRPC_CreateUser(login, password, workspace_id)
     if status == True:
         access_token = create_access_token(
-            data={'sub': task.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            data={'sub': login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {'access_token': access_token, 'token_type': 'Bearer'}
     return {'access_token': False, 'token_type': 'Bearer'}
 
 @app.get('/create_workspace/{workspace_name}')
 def create_workspace(workspace_name: str):
+    login = 'adm'
+    password = '123'
     status = gRPC_CreateWorkspace(workspace_name)
     message = MessageToDict(status)
     print(message)
@@ -120,26 +174,35 @@ def create_workspace(workspace_name: str):
         return {'data': True, 'status': 'OK', 'code': 200} #,"workspace_id":status["id"]
     return get_bad_answer()
 
-@app.post('/upload_file/{workspace_id}')
-def upload_file(task: File, workspace_id: str):
-    status = gRPC_CreateFile(task.path, workspace_id, task.data)
-    if status == True:
-        return {'data': True, 'status': 'OK', 'code': 200}
-    return get_bad_answer()
-
-@app.get('/give_file/{workspace_id}/{path}')
-def give_file(workspace_id: str, path: str):
+@app.post('/upload_file/{path}')
+def upload_file(file: File, path: str, workspace_id: str):
+    login = 'adm'
+    password = '123'
     File = gRPC_GetFile(workspace_id, path)
     if not File:
         return get_bad_answer()
     return {'data': File, 'status': 'OK', 'code': 200}
 
-@app.get('/give_folder/{workspace_id}/{path}')
+@app.get('/give_file/{path}')
+def give_file(path: str, workspace_id: str):
+    login = 'adm'
+    password = '123'
+    File = gRPC_GetFile(workspace_id, path)
+    if not File:
+        return get_bad_answer()
+    return {'data': File, 'status': 'OK', 'code': 200}
+
+@app.get('/give_folder/{path}')
 def give_folder(workspace_id: str, path=str):
+    login = 'adm'
+    password = '123'
     File = gRPC_GetFolder(workspace_id, path)
     if not File:
         return get_bad_answer()
     return {'data': File, 'status': 'OK', 'code': 200}
+
+
+
 
 
 
@@ -223,6 +286,14 @@ def gRPC_GetFolder(path: str, workspace_id: str):
     with grpc.insecure_channel('localhost:8785') as channel:
         stub = grpc_pb2.TransmissionStub(channel)
         req = pb2.Folder(path=path, workspace_id=workspace_id)
+        responce = stub.GetFolder(req)
+        logging.info(responce)
+    return responce
+
+def gRPC_ReadUser(login: str, password: str, workspace_id: str):
+    with grpc.insecure_channel('localhost:8785') as channel:
+        stub = grpc_pb2.TransmissionStub(channel)
+        req = pb2.User(login=login, password=password, workspace_id=workspace_id)
         responce = stub.GetFolder(req)
         logging.info(responce)
     return responce
