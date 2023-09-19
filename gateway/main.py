@@ -3,13 +3,15 @@ from typing import List
 import logging
 from jose import jwt
 from pydantic import BaseModel, Field
-from fastapi import FastAPI, status, HTTPException, Depends
+from fastapi import FastAPI, status, HTTPException, Depends, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import array
 import grpc
 import grpc_helper
+import io
+from starlette.responses import StreamingResponse
 import grpc_pb2 as pb2
 import grpc_pb2_grpc as grpc_pb2
 
@@ -43,9 +45,6 @@ pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token') 
 
 # module OBJECT #
-class File(BaseModel):
-    data: bytes
-
 class User(BaseModel):
     login: str
     password: str
@@ -108,80 +107,114 @@ def login_for_access_token(task: Person):
     )
     return {'access_token': access_token, 'token_type': 'Bearer'}
 
-@app.post('/create_user/{workspace_name}')
+app.post('/create_user/{workspace_name}')
 def create_user(task: User, workspace_name: str):
-    status = gRPC_CreateUser(task.login, task.password, workspace_name)
-    workspace_id = gRPC_CreateWorkspace(workspace_name)
-    if status == True:
+    User = gRPC_CreateUser(task.login, task.password,workspace_id=workspace_name)
+    message = MessageToDict(User)
+    if User != "":
         access_token = create_access_token(
-            data={'login': task.login}, workspace = workspace_id, password = task.password, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            data={'sub': task.login}, expires_delta=timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {'access_token': access_token, 'token_type': 'Bearer'}
     return {'access_token': False, 'token_type': 'Bearer'}
+
+
+# @app.post('/test')  
+# def test(file: bytes = File()):
+#     saveFile = open('open_suka.bmp', 'wb')
+#     saveFile.write(file) 
+#     saveFile.close()
+#     return {'file_bytes': str(file)}
+
+# @app.post('/test_second')  
+# def test_second(file: UploadFile = File(None)):
+#     saveFile = open('open_suka_dva.bmp', 'wb')
+#     data = file.file.read()
+#     saveFile.write(data) 
+#     saveFile.close()
+#     return {'file_bytes': str(data)}
+
+
+
+
 
 #file
 @app.get('/create_workspace')
 def create_workspace(current_user: TokenData = Depends(oauth2_scheme)):
     token = decode_jwt(current_user)
     workspace_id = token.get('workspace_id')
-    status = gRPC_CreateWorkspace(workspace_id)
-    message = MessageToDict(status)
-    if status !="":
-        return {'data': True, 'status': 'OK', 'code': 200} #,"workspace_id":status["id"]
+    Workspace = gRPC_CreateWorkspace(workspace_id)
+    message = MessageToDict(Workspace)
+    if status != "":
+        return {'data': True, 'status': 'OK', 'code': 200}
     return get_bad_answer()
 
+
+
+
+
+
+
 @app.post('/upload_file')
-def upload_file(task: File, path: str, current_user: TokenData = Depends(oauth2_scheme)):
+def upload_file(path: str, file: UploadFile = File(None), current_user: TokenData = Depends(oauth2_scheme)):
     token = decode_jwt(current_user)
-    File = gRPC_CreateFile(path, token.get('workspace_id'), File.data)
-    if not File:
+    File = gRPC_CreateFile(path, token.get('workspace_id'), file.file.read())
+    message = MessageToDict(File)
+    if status != "":
         return get_bad_answer()
-    return {'data': File, 'status': 'OK', 'code': 200}
-
-@app.get('/give_file')
-def give_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
-    token = decode_jwt(current_user)
-    File = gRPC_GetFile(token.get('workspace_id'), path)
-    if not File:
-        return get_bad_answer()
-    return {'data': File, 'status': 'OK', 'code': 200}
-
-@app.get('/delete_file')
-def delete_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
-    token = decode_jwt(current_user)
-    File = gRPC_DeleteFile(token.get('workspace_id'), path)
-    if not File:
-        return get_bad_answer()
-    return {'data': File, 'status': 'OK', 'code': 200}
-
-#folder
-@app.get('/give_folder')
-def give_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
-    token = decode_jwt(current_user)
-    File = gRPC_GetFolder(token.get('workspace_id'), path)
-    if not File:
-        return get_bad_answer()
-    return {'data': File, 'status': 'OK', 'code': 200}
-
-@app.get('/delete_folder')
-def delete_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
-    token = decode_jwt(current_user)
-    Status = gRPC_DeleteFolder(token.get('workspace_id'), path)
-    if Status == False:
-        return get_bad_answer()
-    return {'data': File, 'status': 'OK', 'code': 200}
-
-@app.get('/create_folder')
-def create_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
-    token = decode_jwt(current_user)
-    Status = gRPC_CreateFolder(token.get('workspace_id'), path)
-    if Status == False:
-        return get_bad_answer()
-    return {'data': File, 'status': 'OK', 'code': 200}
+    return {'data': True, 'status': 'OK', 'code': 200}
 
 
-# module gRPC #
-#user
+
+
+
+
+
+
+# @app.get('/give_file')
+# def give_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     File = gRPC_GetFile(token.get('workspace_id'), path)
+#     if not File:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+# @app.get('/delete_file')
+# def delete_file(path: str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     File = gRPC_DeleteFile(token.get('workspace_id'), path)
+#     if not File:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+# # folder
+# @app.get('/give_folder')
+# def give_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     File = gRPC_GetFolder(token.get('workspace_id'), path)
+#     if not File:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+# @app.get('/delete_folder')
+# def delete_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     Status = gRPC_DeleteFolder(token.get('workspace_id'), path)
+#     if Status == False:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+# @app.get('/create_folder')
+# def create_folder(path=str, current_user: TokenData = Depends(oauth2_scheme)):
+#     token = decode_jwt(current_user)
+#     Status = gRPC_CreateFolder(token.get('workspace_id'), path)
+#     if Status == False:
+#         return get_bad_answer()
+#     return {'data': File, 'status': 'OK', 'code': 200}
+
+
+# # # module gRPC #
+# # #user
 def gRPC_CreateUser(login: str, password: str, workspace_id: str):
     with grpc.insecure_channel(gRPC_ADRS) as channel:
         stub = grpc_pb2.TransmissionStub(channel)
