@@ -33,6 +33,10 @@ app = FastAPI(
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token') 
 
+
+
+
+
 logging.basicConfig(
     level=logging.INFO, 
     format='%(asctime)s %(levelname)s %(message)s',
